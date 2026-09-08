@@ -1,0 +1,123 @@
+{
+  "id": "SumWiseExactMock1",
+  "name": "SumWise — exact result (SYNTHETIC MOCK)",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "parameters": {},
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "id": "input",
+      "name": "Synthetic expression",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "expression",
+              "name": "expression",
+              "type": "string",
+              "value": "1/3 + 5/6"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "id": "evaluate",
+      "name": "SumWise Evaluate (select MOCK credential)",
+      "type": "n8n-nodes-sumwise-compute.sumWiseCompute",
+      "typeVersion": 1,
+      "parameters": {
+        "operation": "evaluate",
+        "expression": "={{ $json.expression }}"
+      },
+      "position": [
+        500,
+        300
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "inspect",
+      "name": "Inspect exact structured output",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "parameters": {},
+      "position": [
+        780,
+        300
+      ]
+    },
+    {
+      "id": "note",
+      "name": "MOCK / SYNTHETIC ONLY",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "parameters": {
+        "content": "## Synthetic mock demonstration\nSelect a SumWise Compute credential pointed at the local mock origin shown by npm run preview. Preview provisions the synthetic mock credential; select it. No key entry is needed.\n\nOutput: body.result.text = \"7/6\"; numerator and denominator remain strings. The real-service step is unexecuted; separately issued credentials are required for any future real-service test.",
+        "height": 200,
+        "width": 580
+      },
+      "position": [
+        180,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Synthetic expression",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthetic expression": {
+      "main": [
+        [
+          {
+            "node": "SumWise Evaluate (select MOCK credential)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SumWise Evaluate (select MOCK credential)": {
+      "main": [
+        [
+          {
+            "node": "Inspect exact structured output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": []
+}

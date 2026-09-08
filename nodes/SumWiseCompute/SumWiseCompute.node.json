@@ -1,0 +1,20 @@
+{
+  "node": "n8n-nodes-sumwise-compute.sumWiseCompute",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "Data & Storage"
+  ],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://github.com/avery835/n8n-nodes-sumwise-compute/blob/main/docs/CREDENTIALS.md"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://github.com/avery835/n8n-nodes-sumwise-compute/blob/main/docs/USAGE.md"
+      }
+    ]
+  }
+}

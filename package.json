@@ -1,0 +1,70 @@
+{
+  "name": "n8n-nodes-sumwise-compute",
+  "version": "0.1.0-dev.1",
+  "description": "Evaluate expressions with SumWise Compute and preserve typed exact and approximate results",
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package"
+  ],
+  "files": [
+    "dist/nodes",
+    "dist/credentials",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "docs/USAGE.md",
+    "docs/CREDENTIALS.md",
+    "examples/01-exact-result.mock.json",
+    "examples/02-reconciliation.mock.json"
+  ],
+  "scripts": {
+    "build": "n8n-node build",
+    "lint": "n8n-node lint",
+    "test": "node --no-node-snapshot --test tests/*.test.cjs",
+    "preview": "node scripts/preview.cjs",
+    "setup:preview": "node scripts/setup-preview.cjs",
+    "smoke:n8n": "node scripts/smoke-n8n.cjs",
+    "check:package": "node scripts/check-package-content.cjs",
+    "check:source": "node scripts/check-public-source.cjs",
+    "smoke:release": "node --no-node-snapshot scripts/release-smoke.cjs"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/SumWiseComputeApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/SumWiseCompute/SumWiseCompute.node.js"
+    ],
+    "strict": true
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "0.46.4",
+    "eslint": "9.29.0",
+    "n8n": "2.37.10",
+    "n8n-workflow": "2.37.4",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "author": {
+    "name": "Avery Wise",
+    "email": "avery@sumwisecalc.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avery835/n8n-nodes-sumwise-compute.git"
+  },
+  "homepage": "https://github.com/avery835/n8n-nodes-sumwise-compute#readme",
+  "bugs": {
+    "url": "https://github.com/avery835/n8n-nodes-sumwise-compute/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "invalid_http_request": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/invalid-http-request",
+    "title": "Invalid HTTP request",
+    "status": 400,
+    "detail": "The HTTP request framing is invalid for this service.",
+    "code": "invalid_http_request"
+  },
+  "route_not_found": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/route-not-found",
+    "title": "Route not found",
+    "status": 404,
+    "detail": "The requested service route was not found.",
+    "code": "route_not_found"
+  },
+  "method_not_allowed": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/method-not-allowed",
+    "title": "Method not allowed",
+    "status": 405,
+    "detail": "The requested service route accepts POST only.",
+    "code": "method_not_allowed"
+  },
+  "content_length_required": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/content-length-required",
+    "title": "Content length required",
+    "status": 411,
+    "detail": "A single valid Content-Length header is required.",
+    "code": "content_length_required"
+  },
+  "request_body_too_large": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/request-body-too-large",
+    "title": "Request body too large",
+    "status": 413,
+    "detail": "The request body exceeds the private service limit.",
+    "code": "request_body_too_large"
+  },
+  "unsupported_media_type": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/unsupported-media-type",
+    "title": "Unsupported media type",
+    "status": 415,
+    "detail": "The service accepts application/json with UTF-8 only.",
+    "code": "unsupported_media_type"
+  },
+  "authentication_required": {
+    "type": "https://sumwisecalc.com/compute/service/problems/v1/authentication-required",
+    "title": "Authentication required",
+    "status": 401,
+    "detail": "A valid private-alpha API key is required.",
+    "code": "authentication_required"
+  },
+  "concurrent_request_limit_exceeded": {
+    "type": "https://sumwisecalc.com/compute/service/problems/v1/concurrent-request-limit-exceeded",
+    "title": "Concurrent request limit exceeded",
+    "status": 429,
+    "detail": "This API key already has a request in progress.",
+    "code": "concurrent_request_limit_exceeded"
+  },
+  "rate_limit_exceeded": {
+    "type": "https://sumwisecalc.com/compute/service/problems/v1/rate-limit-exceeded",
+    "title": "Rate limit exceeded",
+    "status": 429,
+    "detail": "The fixed accepted-request rate limit is exhausted.",
+    "code": "rate_limit_exceeded"
+  },
+  "quota_exhausted": {
+    "type": "https://sumwisecalc.com/compute/service/problems/v1/quota-exhausted",
+    "title": "Compute quota exhausted",
+    "status": 429,
+    "detail": "The current Compute quota is exhausted.",
+    "code": "quota_exhausted"
+  },
+  "service_busy": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/service/service-busy",
+    "title": "Service busy",
+    "status": 503,
+    "detail": "The private service is already processing its single allowed request.",
+    "code": "service_busy"
+  },
+  "service_unavailable": {
+    "type": "https://sumwisecalc.com/compute/service/problems/v1/service-unavailable",
+    "title": "Service unavailable",
+    "status": 503,
+    "detail": "The service is temporarily unavailable.",
+    "code": "service_unavailable"
+  },
+  "invalid_request": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/invalid-request",
+    "title": "Invalid request",
+    "status": 422,
+    "detail": "The request body does not match the Evaluate request contract.",
+    "code": "invalid_request",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "expression_parse_error": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/expression-parse-error",
+    "title": "Expression parse error",
+    "status": 422,
+    "detail": "The expression could not be parsed by the supported Evaluate grammar.",
+    "code": "expression_parse_error",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "unbound_symbol": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/unbound-symbol",
+    "title": "Unbound symbol",
+    "status": 422,
+    "detail": "The expression contains an identifier that is not available as a public constant.",
+    "code": "unbound_symbol",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "unknown_function": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/unknown-function",
+    "title": "Unknown function",
+    "status": 422,
+    "detail": "The expression names a function that is not recognized by this API version.",
+    "code": "unknown_function",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "operation_not_allowed": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/operation-not-allowed",
+    "title": "Operation not allowed",
+    "status": 422,
+    "detail": "The expression uses an operation that is not allowed by this Evaluate API version.",
+    "code": "operation_not_allowed",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "unsupported_expression": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/unsupported-expression",
+    "title": "Unsupported expression",
+    "status": 422,
+    "detail": "The expression is valid but is not supported by this Evaluate API version.",
+    "code": "unsupported_expression",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "domain_error": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/domain-error",
+    "title": "Domain error",
+    "status": 422,
+    "detail": "The expression is outside the supported mathematical domain.",
+    "code": "domain_error",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "numeric_overflow": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/numeric-overflow",
+    "title": "Numeric overflow",
+    "status": 422,
+    "detail": "Evaluation exceeded the supported finite numeric range.",
+    "code": "numeric_overflow",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "computation_limit_exceeded": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/computation-limit-exceeded",
+    "title": "Computation limit exceeded",
+    "status": 422,
+    "detail": "The request exceeded the computation limits for this API version.",
+    "code": "computation_limit_exceeded",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "result_limit_exceeded": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/result-limit-exceeded",
+    "title": "Result limit exceeded",
+    "status": 422,
+    "detail": "The result exceeded the output limits for this API version.",
+    "code": "result_limit_exceeded",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "computation_timeout": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/computation-timeout",
+    "title": "Computation timeout",
+    "status": 504,
+    "detail": "The computation did not complete within the service time limit.",
+    "code": "computation_timeout",
+    "api_version": "v1",
+    "operation": "evaluate"
+  },
+  "internal_error": {
+    "type": "https://sumwisecalc.com/compute/problems/v1/evaluate/internal-error",
+    "title": "Internal error",
+    "status": 500,
+    "detail": "The service could not safely produce a result.",
+    "code": "internal_error",
+    "api_version": "v1",
+    "operation": "evaluate"
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "id": "SumWiseReconMock1",
+  "name": "SumWise — reconciliation exception (SYNTHETIC MOCK)",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "parameters": {},
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "id": "source-a",
+      "name": "Synthetic source A total",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sourceTotalA",
+              "name": "sourceTotalA",
+              "type": "string",
+              "value": "10501"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "id": "source-b",
+      "name": "Synthetic source B total",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sourceTotalB",
+              "name": "sourceTotalB",
+              "type": "string",
+              "value": "10500"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "id": "evaluate",
+      "name": "SumWise Evaluate (select MOCK credential)",
+      "type": "n8n-nodes-sumwise-compute.sumWiseCompute",
+      "typeVersion": 1,
+      "parameters": {
+        "operation": "evaluate",
+        "expression": "={{ \"(\" + $json.sourceTotalA + \") - (\" + $json.sourceTotalB + \")\" }}"
+      },
+      "position": [
+        700,
+        300
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "branch",
+      "name": "Reconciliation exception?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "exception",
+              "leftValue": "={{ $json.body.result.exactness !== \"exact\" || $json.body.result.text !== \"0\" }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "id": "exception",
+      "name": "Exception — inspect synthetic difference",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "parameters": {},
+      "position": [
+        1220,
+        200
+      ]
+    },
+    {
+      "id": "matched",
+      "name": "Matched — exact zero",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "parameters": {},
+      "position": [
+        1220,
+        420
+      ]
+    },
+    {
+      "id": "note",
+      "name": "MOCK / SYNTHETIC ONLY",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "parameters": {
+        "content": "## Two synthetic totals, no customer data\nSource A = \"10501\"; source B = \"10500\". Values stay strings. SumWise computes the difference, and the standard If node checks exactness and zero text. No email, CRM, or finance system is connected.\n\nSelect a local MOCK credential. The fixture returns exact \"1\", taking the exception branch. Set A to \"10500\" for the fixed exact-zero fixture. Real-service use is unexecuted and needs separate authorization.",
+        "height": 200,
+        "width": 580
+      },
+      "position": [
+        180,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Synthetic source A total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthetic source A total": {
+      "main": [
+        [
+          {
+            "node": "Synthetic source B total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthetic source B total": {
+      "main": [
+        [
+          {
+            "node": "SumWise Evaluate (select MOCK credential)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SumWise Evaluate (select MOCK credential)": {
+      "main": [
+        [
+          {
+            "node": "Reconciliation exception?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reconciliation exception?": {
+      "main": [
+        [
+          {
+            "node": "Exception — inspect synthetic difference",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Matched — exact zero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": []
+}

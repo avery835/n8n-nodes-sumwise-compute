@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.dev/
+.tools/
+.cache/
+coverage/
+*.log
+*.tgz
+.env
+.env.*
+*.tsbuildinfo
+.review/
