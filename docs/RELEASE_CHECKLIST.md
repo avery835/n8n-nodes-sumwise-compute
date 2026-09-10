@@ -1,25 +1,31 @@
-# Release readiness checklist
+# Self-hosted preview release checklist
 
-Approved and implemented locally:
+Community preview for self-hosted n8n. Not n8n-verified.
+Paid SumWise Compute access is separately provisioned.
 
-- [x] Avery Wise author and intended avery835/n8n-nodes-sumwise-compute repository/homepage/issues metadata.
-- [x] Connector-only MIT license, with retained third-party notices and service/engine/desktop/trademark exclusions.
-- [x] Fixed Evaluate credential test requiring exact integer 2, with accepted-request consumption disclosed in UI/docs.
-- [x] Public credential-documentation URL and guide in the intended source snapshot.
-- [x] Supported usableAsTool declaration sharing the regular Evaluate behavior.
-- [x] Official stock ESLint template with strict mode; the five former exceptions are removed. One separately approved inline compatibility directive applies only to CredentialTestContext request, because the pinned host exposes no modern helper there.
-- [x] Separate explicit npm/public-source inventories and prepared manual provenance publishing workflow.
+Established review/validation facts:
 
-Pending execution/decisions:
+- [x] Connector-only MIT licensing, retained third-party/source-origin and AI-assistance notices, and service/engine/desktop/trademark exclusions.
+- [x] Fixed credential test requiring contract-valid exact integer 2, with request-consumption and editor save/open/retest notices.
+- [x] Evaluate and supported generated tool wrapper preserve exact/approximate results, security/retry behavior and paired items.
+- [x] Stock strict ESLint configuration remains intact. One narrow directive applies to the visible legacy credential-test request call; it does not pass verification with inline configuration ignored.
+- [x] Reviewed public source uploaded with separate history and successful Linux CI; 120 baseline tests retained.
+- [x] Prior authorized local-route live credential, Evaluate, reconciliation exception/match and generated-wrapper calls passed with the real HTTPS hostname and certificate validation.
+- [x] Expected revoked-credential rejection observed in a separate continuation. The original interrupted lifecycle remains stopped; external TLS and owner-reported editor checks retain their narrower evidence limits.
 
-- [ ] Targeted release review and Avery's editor walkthrough (including save/retest and generated tool fields).
-- [ ] Separately authorized real-service smoke with provisioned paid-service/evaluation access and accepted-request expenditure.
-- [ ] Confirm npm username, ownership, availability and approved authentication/bootstrap arrangement.
-- [ ] Create the intended public repository, upload only the reviewed snapshot, and pass remote Linux CI.
-- [ ] Configure trusted publishing or a separately approved short-lived first-publication token; revoke/remove bootstrap access afterward.
-- [ ] Manually publish the reviewed public commit/version with GitHub Actions provenance, then inspect actual registry contents/provenance.
-- [ ] Run published-package verification, arrange reviewer service access, and submit through Creator Portal.
+For each publication, complete and record these gates in release evidence and Actions/registry metadata. This checklist alone does not assert publication:
 
-The five former stock findings correspond to license, homepage, credential test, credential documentation and usableAsTool. Their implementations are locally testable; registry/repository/account and n8n review prerequisites are separate. No local lint or mock pass establishes verified-node status or backend production readiness.
+- [ ] Confirm actual npm/GitHub identities, exact package/version availability and owner-approved authentication scope/expiry.
+- [ ] Review the release delta and actual package bytes; pass build, configured lint, complete tests, package and source checks.
+- [ ] Commit/export only selected source, reconcile the whole public tree and preserve distinct private/public history.
+- [ ] Pass complete push-triggered Linux CI for the exact reviewed public SHA.
+- [ ] Dispatch manual publish.yml for that public SHA and **0.1.0-dev.1**, public access and **next** tag, with provenance.
+- [ ] Verify exact registry metadata, next tag, downloaded tarball integrity/content and cryptographic provenance.
+- [ ] Exercise actual registry-installed bytes in fresh isolated n8n state using only fixed loopback mocks; clean task-owned state/processes.
+- [ ] Confirm bootstrap-token revocation and repository-secret removal; record exact trusted-publisher/direct-publish status or remaining owner step.
 
-See [controlled publishing](PUBLISHING.md) for exact sequencing and official sources, and [development](DEVELOPMENT.md) for local preview. Internal historical candidate/contract/review reports remain local and are not exported.
+The scanner/helper compatibility question and Creator Portal prerelease selection remain unresolved. They do not block this explicitly unverified self-hosted preview and are not waived by it. n8n verification, Cloud availability, external model/agent behavior, real customer integrations, backend deployment and production suitability are not claimed. Later verification/submission needs its own authorization.
+
+Founding private-alpha access is US$99 for 30 days, with limited founder help setting up one supported calculation after confirming fit and applicable limits; contact [Avery](mailto:avery@sumwisecalc.com). Package installation grants no service entitlement, automatic signup, unlimited consulting, QA service or SLA.
+
+See [controlled publishing](PUBLISHING.md), [development](DEVELOPMENT.md) and [usage](USAGE.md). Private historical evidence stays excluded from both public source and npm.

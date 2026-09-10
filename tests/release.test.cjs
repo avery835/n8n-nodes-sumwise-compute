@@ -122,3 +122,32 @@ test('release package check includes MIT and credential guide while rejecting th
   const manifest=[{name:'n8n-nodes-sumwise-compute',files:expectedFiles.map(path=>({path}))}];
   assert.throws(()=>inspectPackage(manifest,file=>file==='README.md'?REFLECTION:fs.readFileSync(path.join(__dirname,'..',file),'utf8')),/Synthetic test credential/);
 });
+
+test('self-hosted preview docs distinguish installation, paid access and verification',()=>{
+  const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
+  const readme=read('README.md');
+  assert.match(readme,/Community preview for self-hosted n8n\. Not n8n-verified\./);
+  assert.match(readme,/n8n-nodes-sumwise-compute@0\.1\.0-dev\.1/);
+  assert.match(readme,/n8n-nodes-sumwise-compute@next/);
+  assert.match(readme,/permissions and community-node policy/);
+  assert.match(readme,/US\$99 for 30 days/);
+  assert.match(readme,/mailto:avery@sumwisecalc\.com/);
+  assert.match(readme,/not a complete external authenticated workflow test/);
+  assert.match(readme,/original interrupted lifecycle as PASS/);
+  for(const file of ['README.md','docs/USAGE.md','docs/CREDENTIALS.md']){
+    const text=read(file);
+    assert.match(text,/inline configuration is ignored|inline configuration ignored/);
+    assert.match(text,/legacy.*(?:this\.helpers\.request|request)/);
+    assert.doesNotMatch(text,/scanner(?:-clean| acceptance):?\s*(?:PASS|approved)/i);
+  }
+});
+test('self-hosted preview keeps publication manual and next-only',()=>{
+  const yaml=fs.readFileSync(path.join(__dirname,'../.github/workflows/publish.yml'),'utf8');
+  assert.match(yaml,/workflow_dispatch:/);
+  assert.doesNotMatch(yaml,/^\s+(?:push|pull_request|pull_request_target|workflow_run|release|schedule):/m);
+  assert.equal((yaml.match(/npm publish --provenance --access public --tag next --ignore-scripts/g)||[]).length,2);
+  assert.match(yaml,/assert\.equal\(process\.env\.GITHUB_SHA, process\.env\.REVIEWED_SHA\)/);
+  assert.match(yaml,/assert\.equal\(p\.version, process\.env\.EXPECTED_VERSION\)/);
+  assert.match(yaml,/NODE_AUTH_TOKEN: \$\{\{ secrets\.NPM_BOOTSTRAP_TOKEN \}\}/);
+  assert.equal(require('../package.json').version,'0.1.0-dev.1');
+});

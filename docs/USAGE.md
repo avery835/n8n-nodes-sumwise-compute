@@ -1,5 +1,10 @@
 # SumWise Compute usage
 
+Community preview for self-hosted n8n. Not n8n-verified.
+Paid SumWise Compute access is separately provisioned.
+
+Install the exact **n8n-nodes-sumwise-compute@0.1.0-dev.1** version through your permitted self-hosted community-node installation flow; **@next** follows the preview tag. Instance permissions and policy must allow unverified packages. See [installation and access](../README.md). This is not an n8n Cloud custom-node release.
+
 ## Credentials
 
 **SumWise Compute API** stores the separately issued opaque bearer API key as a password. Do not place credentials in item data, node parameters, workflow exports or URLs.
@@ -55,10 +60,12 @@ Expressions/results reach the chosen service and may persist in n8n execution hi
 
 The [exact example](../examples/01-exact-result.mock.json) and [reconciliation example](../examples/02-reconciliation.mock.json) use synthetic inputs, omit credentials and disable Retry On Fail. The latter asks the service to subtract two totals and uses a standard If node to inspect a nonzero or approximate result; it does not perform local arithmetic or connect a finance, email or CRM account.
 
-Mock-backed tests and two real-n8n CLI examples have executed. Real-service testing and manual editor validation remain pending. The MIT release candidate is not an n8n-verified integration. Publication/submission and account arrangements remain pending.
+Mock-backed tests and two real-n8n CLI examples have executed, and the public source passed Linux CI. Prior bounded live credential, Evaluate, reconciliation exception/match and generated-wrapper requests succeeded through an authorized local route preserving the real HTTPS hostname and certificate validation. External TLS reachability was observed separately; it was not a full external authenticated workflow test. A separate continuation observed expected revoked-credential rejection without converting the original interrupted lifecycle into PASS. Prior owner-reported editor checks are not a new automated walkthrough.
+
+The pinned custom credential-test context uses the legacy `this.helpers.request` helper. The known verification rule rejects it with inline configuration ignored; the single narrow directive is not an n8n waiver or scanner PASS. npm publication does not establish n8n verification, Cloud availability, external AI-agent behavior or real customer finance integration.
 
 ## Tool use
 
 The n8n-generated tool exposes the same Evaluate operation and body envelope. Map only the expression from the agent; origin, key and timeout remain credential-level. Each accepted call consumes service allowance, and an agent or the host may issue multiple calls independently of node-level no-retry behavior. Local wrapper invocation uses a synthetic expression and no external model; actual AI-agent usage is not claimed.
 
-Paid service access is separately provisioned; the connector license grants no service entitlement.
+Paid service access is separately provisioned; the connector license grants no service entitlement. Founding private-alpha access is US$99 for 30 days, with limited founder help setting up one supported calculation after confirming fit and applicable limits. Contact [Avery](mailto:avery@sumwisecalc.com). This is not unlimited consulting, a QA service, automatic signup, an SLA or a production-suitability promise.
