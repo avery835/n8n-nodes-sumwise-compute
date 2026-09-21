@@ -1,16 +1,45 @@
-import type { ICredentialDataDecryptedObject, ICredentialTestFunction, IDataObject, IHttpRequestOptions } from 'n8n-workflow';
-import { ConnectorError, endpoint, fail, object, requestBody, responseData, transportError } from './protocol';
+import type { ICredentialDataDecryptedObject, IDataObject, IHttpRequestOptions } from 'n8n-workflow';
+import { endpoint, fail, requestBody, responseData, transportError } from './protocol';
 
-// Both host adapters share request framing, configuration and response validation.
-export async function evaluate(expression: unknown, credentials: ICredentialDataDecryptedObject,
-  send: (options: IHttpRequestOptions) => Promise<unknown>): Promise<IDataObject> {
-  const body = requestBody(expression);
+function configuration(credentials: ICredentialDataDecryptedObject) {
   const url = endpoint(credentials.serviceOrigin);
   const timeout = credentials.requestTimeout ?? 30000;
   if (typeof timeout !== 'number' || !Number.isInteger(timeout) || timeout < 1000 || timeout > 120000 ||
       typeof credentials.apiKey !== 'string' || !credentials.apiKey || /[\r\n]/.test(credentials.apiKey)) {
     fail('Invalid Compute credential configuration', 'invalid_configuration');
   }
+  return { url, timeout, apiKey: credentials.apiKey };
+}
+
+// Supported n8n credential authentication hook; it does not perform HTTP requests.
+// RoutingNode sets its own timeout before this hook, so apply the validated
+// credential timeout here as well as in normal Evaluate request construction.
+export async function authenticateRequest(credentials: ICredentialDataDecryptedObject,
+  options: IHttpRequestOptions): Promise<IHttpRequestOptions> {
+  const settings = configuration(credentials);
+  if (Object.keys(options.headers ?? {}).some((name) => name.toLowerCase() === 'authorization') || options.auth) {
+    // n8n's authentication wrapper calls this hook again after HTTP 401 with the
+    // already authenticated options. Refuse that second dispatch, without state.
+    fail('Authentication failed or the request was already authenticated. No automatic retry was sent. Check the credential before a new attempt; request completion and allowance may be uncertain.', 'authentication_required');
+  }
+  if (options.method !== 'POST' || (options.url !== '/v1/evaluate' && options.url !== settings.url) ||
+      typeof options.body !== 'string' || [...options.body].some((char) => char.charCodeAt(0) > 126) || options.body.length > 4096) {
+    fail('Invalid Compute request configuration', 'invalid_configuration');
+  }
+  return {
+    ...options, url: settings.url, baseURL: undefined, timeout: settings.timeout,
+    headers: { ...options.headers, Authorization: `Bearer ${settings.apiKey}`,
+      'Content-Type': 'application/json', 'Content-Length': String(options.body.length) },
+    encoding: 'text', json: false, disableFollowRedirect: true,
+    skipSslCertificateValidation: false, sendCredentialsOnCrossOriginRedirect: false,
+  };
+}
+
+// Normal Evaluate retains closed response validation and exact strings.
+export async function evaluate(expression: unknown, credentials: ICredentialDataDecryptedObject,
+  send: (options: IHttpRequestOptions) => Promise<unknown>): Promise<IDataObject> {
+  const body = requestBody(expression);
+  const { url, timeout, apiKey } = configuration(credentials);
   let response: unknown;
   try {
     response = await send({
@@ -20,33 +49,5 @@ export async function evaluate(expression: unknown, credentials: ICredentialData
       disableFollowRedirect: true, skipSslCertificateValidation: false, timeout,
     });
   } catch (error) { throw transportError(error); }
-  return responseData(response, credentials.apiKey);
+  return responseData(response, apiKey);
 }
-
-export const testCredential: ICredentialTestFunction = async function (credential) {
-  try {
-    const credentials = credential.data ?? {};
-    const result = await evaluate('1+1', credentials, async (options) =>
-      // CredentialTestContext exposes the legacy request helper. Its bearer auth
-      // option is resolved by n8n; it has no preAuthentication/retry wrapper.
-      // eslint-disable-next-line @n8n/community-nodes/no-deprecated-workflow-functions -- n8n 2.37.10 CredentialTestContext exposes only request; this adapter has no retry wrapper.
-      await this.helpers.request({
-        method: options.method, uri: options.url, body: options.body, headers: options.headers,
-        auth: { bearer: credentials.apiKey }, timeout: options.timeout,
-        json: false, encoding: 'utf8', resolveWithFullResponse: true, simple: false,
-        followRedirect: false, followAllRedirects: false, maxRedirects: 0,
-        rejectUnauthorized: true, sendCredentialsOnCrossOriginRedirect: false,
-      }));
-    const body = result.body;
-    if (!object(body) || !object(body.result) || body.result.type !== 'integer' ||
-        body.result.exactness !== 'exact' || body.result.text !== '2' || body.result.value !== '2') {
-      return { status: 'Error', message: 'Unexpected calculation result: the credential test requires exact integer 2. An accepted test may have consumed request allowance.' };
-    }
-    return { status: 'OK', message: 'Calculation test returned exact integer 2. Each accepted test counts toward your request limits.' };
-  } catch (error) {
-    const safe = error instanceof ConnectorError ? error : new ConnectorError('Credential test failed', { code: 'invalid_configuration' });
-    // Only static connector diagnostics: no response body, raw error, key or request.
-    const detail = typeof safe.info.detail === 'string' ? safe.info.detail : 'Check the credential settings before a new attempt.';
-    return { status: 'Error', message: safe.message + '. ' + detail + ' A failed test does not establish that no request allowance was consumed.' };
-  }
-};

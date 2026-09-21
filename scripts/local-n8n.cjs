@@ -13,11 +13,11 @@ function resolveStateRoot(stateRoot) {
     throw new Error('Invalid isolated state root');
   }
   const destination = path.resolve(root, stateRoot);
-  const reviewRoots = ['SUMWISE-N8N-R1', 'SUMWISE-N8N-RELEASE-1'].map(name => path.join(root, '.review', name));
+  const reviewRoots = ['SUMWISE-N8N-R1', 'SUMWISE-N8N-RELEASE-1', 'SW-COMPUTE-N8N-STABLE1'].map(name => path.join(root, '.review', name));
   const allowed = reviewRoots.find(base => destination.startsWith(base + path.sep)) || reviewRoots[0];
   const relative = path.relative(allowed, destination);
   if (!relative || relative.startsWith('..') || path.isAbsolute(relative) || relative.split(path.sep).length < 2 || relative.includes(':')) {
-    throw new Error('Isolated state must be beneath .review/SUMWISE-N8N-R1/<run>/<child>');
+    throw new Error('Isolated state must be beneath an approved .review task/<run>/<child>');
   }
   let cursor = root;
   for (const part of path.relative(root, destination).split(path.sep)) {
@@ -41,7 +41,10 @@ async function freePort() {
   await new Promise(resolve => server.close(resolve));
   return port;
 }
-async function environment({ stateRoot } = {}) {
+async function environment({ stateRoot, copyBuiltPackage = true } = {}) {
+  if (typeof copyBuiltPackage !== 'boolean' || (!copyBuiltPackage && stateRoot === undefined)) {
+    throw new Error('Package copy may be disabled only for explicit isolated test state');
+  }
   // Fixed development fixture for the newly supported credential test; no calculator.
   require('../tests/fixtures/successes.json')['1+1'] = { ok: true, api_version: 'v1', operation: 'evaluate', engine_version: '0.1.0-mock.1', result: { type: 'integer', text: '2', exactness: 'exact', value: '2' } };
   const devRoot = resolveStateRoot(stateRoot);
@@ -50,11 +53,13 @@ async function environment({ stateRoot } = {}) {
   const moduleDir = path.join(state,'.n8n','nodes','node_modules');
   fs.mkdirSync(moduleDir,{recursive:true});
   const candidate = path.join(moduleDir,'n8n-nodes-sumwise-compute');
+  if (copyBuiltPackage) {
   fs.mkdirSync(candidate,{recursive:true});
   // Install only the candidate's built files for the package loader. Do not recursively
   // expose the project's n8n development dependencies to the custom-directory loader.
   fs.copyFileSync(path.join(root,'package.json'),path.join(candidate,'package.json'));
   fs.cpSync(path.join(root,'dist'),path.join(candidate,'dist'),{recursive:true});
+  }
   const env = { ...process.env,
     N8N_USER_FOLDER: state, N8N_LISTEN_ADDRESS:'127.0.0.1', N8N_HOST:'127.0.0.1', N8N_PROTOCOL:'http',
     N8N_PORT:String(await freePort()), N8N_RUNNERS_BROKER_PORT:String(await freePort()),

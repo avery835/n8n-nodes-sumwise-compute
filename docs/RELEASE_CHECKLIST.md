@@ -1,31 +1,25 @@
-# Self-hosted preview release checklist
+# Stable release checklist
 
-Community preview for self-hosted n8n. Not n8n-verified.
+Community connector for self-hosted n8n. Not n8n-verified.
 Paid SumWise Compute access is separately provisioned.
 
-Established review/validation facts:
+The stable target is 0.1.0 on latest. Preserve the existing next preview tag. This document is a procedure, not a release or verification receipt.
 
-- [x] Connector-only MIT licensing, retained third-party/source-origin and AI-assistance notices, and service/engine/desktop/trademark exclusions.
-- [x] Fixed credential test requiring contract-valid exact integer 2, with request-consumption and editor save/open/retest notices.
-- [x] Evaluate and supported generated tool wrapper preserve exact/approximate results, security/retry behavior and paired items.
-- [x] Stock strict ESLint configuration remains intact. One narrow directive applies to the visible legacy credential-test request call; it does not pass verification with inline configuration ignored.
-- [x] Reviewed public source uploaded with separate history and successful Linux CI; 120 baseline tests retained.
-- [x] Prior authorized local-route live credential, Evaluate, reconciliation exception/match and generated-wrapper calls passed with the real HTTPS hostname and certificate validation.
-- [x] Expected revoked-credential rejection observed in a separate continuation. The original interrupted lifecycle remains stopped; external TLS and owner-reported editor checks retain their narrower evidence limits.
+Approved scope includes connector-only MIT licensing and retained third-party/AI-assistance notices; one imperative Evaluate operation and its generated tool wrapper; and the supported credential-file request test. The credential check is status-based, while Evaluate and integration checks validate typed results. Tests may consume accepted-request allowance. The standard lint configuration has no compatibility directive.
 
-For each publication, complete and record these gates in release evidence and Actions/registry metadata. This checklist alone does not assert publication:
+For this candidate:
 
-- [ ] Confirm actual npm/GitHub identities, exact package/version availability and owner-approved authentication scope/expiry.
-- [ ] Review the release delta and actual package bytes; pass build, configured lint, complete tests, package and source checks.
-- [ ] Commit/export only selected source, reconcile the whole public tree and preserve distinct private/public history.
-- [ ] Pass complete push-triggered Linux CI for the exact reviewed public SHA.
-- [ ] Dispatch manual publish.yml for that public SHA and **0.1.0-dev.1**, public access and **next** tag, with provenance.
-- [ ] Verify exact registry metadata, next tag, downloaded tarball integrity/content and cryptographic provenance.
-- [ ] Exercise actual registry-installed bytes in fresh isolated n8n state using only fixed loopback mocks; clean task-owned state/processes.
-- [ ] Confirm bootstrap-token revocation and repository-secret removal; record exact trusted-publisher/direct-publish status or remaining owner step.
+- [ ] Pass build, stock lint, complete tests, package/source checks and the applicable official scanner assessment. Record exact checker version/input; local static analysis is not the full registry scan.
+- [ ] Inspect the actual stable tarball and run credential, Evaluate, both reconciliation branches and generated-tool mocks against its installed bytes in isolated n8n state.
+- [ ] Review and commit explicit source paths; export selected public content while preserving separate private/public histories.
+- [ ] Approve and upload the exact public commit; pass Linux CI and inspect its retained tarball/manifest.
+- [ ] Confirm the existing npm trusted publisher's exact repository/workflow/direct-publish permissions. Do not recreate a bootstrap preview.
+- [ ] Obtain exact approval to dispatch publish.yml for the reviewed public SHA, version 0.1.0 and reviewed CI package SHA-256, using latest and provenance.
+- [ ] Verify the actual registry version/latest, unchanged next, registry tarball integrity/content, public source and signed provenance.
+- [ ] Test the exact registry-installed package with mocks and run the full official scanner for 0.1.0.
+- [ ] Perform any separately authorized live smoke within one explicit attempt budget, including credential tests and postpublication requests. Prior live evidence does not qualify the changed test path.
+- [ ] Review the exact Creator Portal payload and any private reviewer-access arrangements; obtain submission approval and retain the receipt.
 
-The scanner/helper compatibility question and Creator Portal prerelease selection remain unresolved. They do not block this explicitly unverified self-hosted preview and are not waived by it. n8n verification, Cloud availability, external model/agent behavior, real customer integrations, backend deployment and production suitability are not claimed. Later verification/submission needs its own authorization.
+The n8n team's guidance supports the credential-file mechanism and keeping the imperative node; it is not verification approval or a scanner waiver. Public upload, Actions execution, npm publication, Creator Portal submission, actual approval/discovery and service access/deployment remain separate facts.
 
-Founding private-alpha access is US$99 for 30 days, with limited founder help setting up one supported calculation after confirming fit and applicable limits; contact [Avery](mailto:avery@sumwisecalc.com). Package installation grants no service entitlement, automatic signup, unlimited consulting, QA service or SLA.
-
-See [controlled publishing](PUBLISHING.md), [development](DEVELOPMENT.md) and [usage](USAGE.md). Private historical evidence stays excluded from both public source and npm.
+See [controlled publishing](PUBLISHING.md), [development](DEVELOPMENT.md), [credentials](CREDENTIALS.md) and [usage](USAGE.md). Historical private evidence is excluded from public source and npm.

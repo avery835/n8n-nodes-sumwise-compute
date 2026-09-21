@@ -26,7 +26,7 @@ function inspectPackage(manifest, readFile = file => fs.readFileSync(path.join(r
   const contents = new Map(files.map(file => [file, readFile(file)]));
   for (const [file, content] of contents) {
     assert.equal(typeof content, 'string', 'Unreadable package content: ' + file);
-    assert.ok(!content.includes(SYNTHETIC_KEY) && !/\b(?:r1|release)-synthetic-[a-f0-9]{32}\b/.test(content),
+    assert.ok(!content.includes(SYNTHETIC_KEY) && !/\b(?:(?:r1|release)-synthetic-|synthetic-stable-credential-)[a-f0-9]{32}\b/.test(content),
       'Synthetic test credential found in packaged file: ' + file);
     assert.ok(!/\b[A-Za-z]:[\\/]/.test(content), 'Local Windows path found in packaged file: ' + file);
     const localEvidenceText = content.replaceAll('https://github.com/avery835/n8n-nodes-sumwise-compute/blob/main/docs/DEVELOPMENT.md', '[approved public development guide]');

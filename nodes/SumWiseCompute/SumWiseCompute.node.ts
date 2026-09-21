@@ -1,7 +1,7 @@
 import type { IExecuteFunctions, INodeExecutionData, INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { ConnectorError, fail } from './protocol';
-import { evaluate, testCredential } from './transport';
+import { evaluate } from './transport';
 
 export class SumWiseCompute implements INodeType {
   description: INodeTypeDescription = {
@@ -16,7 +16,7 @@ export class SumWiseCompute implements INodeType {
     defaults: { name: 'SumWise Compute' },
     inputs: [NodeConnectionTypes.Main],
     outputs: [NodeConnectionTypes.Main],
-    credentials: [{ name: 'sumWiseComputeApi', required: true, testedBy: 'sumWiseCredentialTest' }],
+    credentials: [{ name: 'sumWiseComputeApi', required: true }],
     properties: [
       {
         displayName: 'Operation', name: 'operation', type: 'options', noDataExpression: true,
@@ -34,8 +34,6 @@ export class SumWiseCompute implements INodeType {
       },
     ],
   };
-
-  methods = { credentialTest: { sumWiseCredentialTest: testCredential } };
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
     const items = this.getInputData();

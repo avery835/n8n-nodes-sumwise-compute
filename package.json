@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-sumwise-compute",
-  "version": "0.1.0-dev.1",
+  "version": "0.1.0",
   "description": "Evaluate expressions with SumWise Compute and preserve typed exact and approximate results",
   "license": "MIT",
   "keywords": [

@@ -1,6 +1,6 @@
 # SumWise Compute API credentials
 
-Community preview for self-hosted n8n. Not n8n-verified.
+Community connector for self-hosted n8n. Not n8n-verified.
 Paid SumWise Compute access is separately provisioned.
 
 Obtain an opaque API key and paid service access separately from [Avery](mailto:avery@sumwisecalc.com). Founding private-alpha access is US$99 for 30 days, with limited founder help setting up one supported calculation after confirming fit and applicable limits. Keys/access are manually provisioned; installing the MIT package grants no service entitlement.
@@ -17,15 +17,19 @@ In n8n, select **SumWise Compute API**:
 
 **Credential testing sends a calculation request. Each accepted test counts toward your request limits.**
 
-The pinned n8n UI tests testable credentials after saving, supports explicit retest, and can automatically retest an existing credential when its editor opens (subject to required-field/permission checks). Do not assume a test happens only after clicking a dedicated test button. This connector's test sends exactly POST /v1/evaluate with {"expression":"1+1"}, the selected origin/key/timeout and normal security controls. Only a contract-valid exact integer result 2 succeeds; an arbitrary 200 response does not prove connection.
+The pinned n8n UI tests testable credentials after saving, supports explicit retest, and can automatically retest an existing credential when its editor opens (subject to required-field/permission checks). Do not assume a test happens only after clicking a dedicated test button. Keep the editor closed during a budgeted smoke test.
 
-Authentication rejection is reported separately from known busy/unavailable/rate/quota problems. A service-limit error does not mean that the key is invalid, and it does not fully qualify service availability. Malformed/unexpected responses fail the test. Timeout/transport failure leaves completion and accounting uncertain; a failed test does not establish that no allowance was consumed. There is no automatic node/test retry or idempotency guarantee. Read [retry decisions](USAGE.md) before any new attempt.
+The supported credential-file ICredentialTestRequest sends exactly POST /v1/evaluate with {"expression":"1+1"}. n8n applies the credential authentication hook before transport. The hook validates the origin and timeout at runtime, including for imported credentials, adds the bearer header, retains TLS validation and refuses redirects. It rejects already authenticated request options, so the host's authentication-refresh path cannot send a second request.
 
-The test uses n8n's supported testedBy function. In the pinned n8n 2.37.10 custom credential-test context, its HTTP path is the existing legacy `this.helpers.request` helper. The known verification rule rejects this call when inline configuration is ignored. The single narrow directive remains visible; configured lint is not scanner acceptance or an n8n waiver. This preview is unverified. No raw authenticated request, helper error or service response body is returned as a credential-test message. Normal Evaluate preserves validated success JSON even if legitimate data happens to equal an opaque key.
+This is a **status-based credential check**: HTTP success means the request was accepted. It does **not** validate the returned calculation body or prove that 1+1 returned 2. Independent integration assertions check the typed exact integer 2 result. Ordinary Evaluate still performs full closed-shape, type and numeric-string validation.
+
+Authentication rejection fails the check. Rate/quota, unavailable/busy, other HTTP and transport failures also fail; they do not automatically establish that a key is invalid. HTTP failure messages use static rules instead of service reason phrases. The host may display a timeout/transport error code. After any timeout or failure, completion and accounting may be uncertain; a failed test does not establish that no allowance was consumed. There is no automatic node/test retry or idempotency guarantee. Read [retry decisions](USAGE.md) before a new attempt.
+
+The check returns no calculation body, authenticated request object or credential header. Ordinary Evaluate preserves validated success JSON even if legitimate data happens to equal an opaque key. The connector does not control the host's entire execution/logging system.
 
 ## Local mocks and validation status
 
-The development preview provisions a clearly named synthetic mock credential; select it without copying a key from documentation. Mocks support fixed fixture expressions. Do not replace their synthetic key with a real one. Future real-service credentials and request expenditure require their own authorization. Prior authorized credential, Evaluate, reconciliation and generated-wrapper calls passed through a local route preserving the real HTTPS hostname and certificate validation. External TLS was observed separately, not as a complete external authenticated workflow. Expected revoked-credential rejection was observed in a separate continuation; the original interrupted lifecycle was not relabeled PASS. Mock tests do not verify the deployed service or external accounts.
+The development preview provisions a clearly named synthetic mock credential; select it without copying a key from documentation. Mocks support fixed fixture expressions. Do not replace their synthetic key with a real one. Real-service credentials and request expenditure require their own authorization. The changed status-based credential path has not been freshly tested against the live service. Prior authorized credential, Evaluate, reconciliation and generated-wrapper calls passed through a local route preserving the real HTTPS hostname and certificate validation. External TLS was observed separately, not as a complete external authenticated workflow. Expected revoked-credential rejection was observed in a separate continuation; the original interrupted lifecycle was not relabeled PASS. Mock tests do not verify the deployed service or external accounts.
 
 Credentials are stored by n8n; expressions/results can remain in host execution history. Configure host access and retention appropriately. The connector does not control the whole n8n host's storage or logging.
 

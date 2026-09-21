@@ -11,7 +11,7 @@ const publicFiles=Object.freeze([
  'nodes/SumWiseCompute/SumWiseCompute.node.ts','nodes/SumWiseCompute/SumWiseCompute.node.json','nodes/SumWiseCompute/protocol.ts','nodes/SumWiseCompute/transport.ts','nodes/SumWiseCompute/problems.json','nodes/SumWiseCompute/sumwise.svg','nodes/SumWiseCompute/sumwise.dark.svg',
  'docs/USAGE.md','docs/CREDENTIALS.md','docs/DEVELOPMENT.md','docs/PUBLISHING.md','docs/RELEASE_CHECKLIST.md',
  'examples/01-exact-result.mock.json','examples/02-reconciliation.mock.json',
- 'tests/evaluate.test.cjs','tests/release.test.cjs','tests/mock-server.cjs','tests/fixtures/successes.json',
+ 'tests/evaluate.test.cjs','tests/release.test.cjs','tests/credential-runtime.cjs','tests/stable.test.cjs','tests/mock-server.cjs','tests/fixtures/successes.json',
  'scripts/check-package-content.cjs','scripts/check-public-source.cjs','scripts/local-n8n.cjs','scripts/release-smoke.cjs',
  'scripts/preview.cjs','scripts/mock-demo.cjs','scripts/loopback-only.cjs','scripts/setup-preview.cjs','scripts/smoke-n8n.cjs',
 ].sort());
@@ -24,7 +24,7 @@ function inspectSource(base=root){
   const bytes=fs.readFileSync(full);const content=bytes.toString('utf8');contents.set(file,content);
   assert.ok(!/\b[A-Za-z]:[\\/]+(?:Dev|Users)[\\/]/i.test(content),'User-local path in '+file);
   assert.ok(!/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bnpm_[A-Za-z0-9]{30,}|\bgh[pousr]_[A-Za-z0-9]{30,}/.test(content),'Credential material in '+file);
-  if(!file.startsWith('tests/')) assert.ok(!content.includes(synthetic) && !/\b(?:r1|release)-synthetic-[a-f0-9]{32}\b/.test(content),'Synthetic token outside public tests: '+file);
+  if(!file.startsWith('tests/')) assert.ok(!content.includes(synthetic) && !/\b(?:(?:r1|release)-synthetic-|synthetic-stable-credential-)[a-f0-9]{32}\b/.test(content),'Synthetic token outside public tests: '+file);
   records.push({path:file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});
  }
  function requireSelected(from,relative){

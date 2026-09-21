@@ -10,8 +10,12 @@ on:
         description: Exact package.json version approved for publication
         required: true
         type: string
+      reviewed_package_sha256:
+        description: SHA-256 of the independently inspected same-SHA CI npm tarball
+        required: true
+        type: string
       authentication:
-        description: Trusted publisher after setup, or separately authorized first-publication token
+        description: Trusted publisher after setup, or separately authorized short-lived token
         required: true
         type: choice
         default: trusted
@@ -43,6 +47,8 @@ jobs:
         env:
           REVIEWED_SHA: ${{ inputs.reviewed_sha }}
           EXPECTED_VERSION: ${{ inputs.version }}
+          REVIEWED_PACKAGE_SHA256: ${{ inputs.reviewed_package_sha256 }}
+          AUTHENTICATION_MODE: ${{ inputs.authentication }}
         run: |
           node <<'NODE'
           const assert = require('node:assert/strict');
@@ -51,10 +57,13 @@ jobs:
           assert.equal(process.env.GITHUB_REPOSITORY, 'avery835/n8n-nodes-sumwise-compute');
           assert.equal(process.env.GITHUB_REF, 'refs/heads/main');
           assert.match(process.env.REVIEWED_SHA, /^[0-9a-f]{40}$/);
+          assert.match(process.env.REVIEWED_PACKAGE_SHA256, /^[0-9a-f]{64}$/);
+          assert.ok(['trusted', 'bootstrap-token'].includes(process.env.AUTHENTICATION_MODE));
           assert.equal(process.env.GITHUB_SHA, process.env.REVIEWED_SHA);
           assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim(), process.env.REVIEWED_SHA);
           assert.equal(p.name, 'n8n-nodes-sumwise-compute');
           assert.equal(p.version, process.env.EXPECTED_VERSION);
+          assert.equal(p.version, '0.1.0');
           assert.equal(p.repository.url, 'git+https://github.com/avery835/n8n-nodes-sumwise-compute.git');
           assert.equal(p.license, 'MIT');
           assert.notEqual(p.private, true);
@@ -70,13 +79,37 @@ jobs:
           node -e "const v=require('child_process').execFileSync('npm',['--version'],{encoding:'utf8'}).trim().split('.').map(Number); if(v[0]<11 || (v[0]===11 && (v[1]<5 || (v[1]===5 && v[2]<1)))) throw Error('npm 11.5.1 or newer is required')"
           git diff --exit-code
           git diff --cached --exit-code
+      - name: Pack once and require the independently reviewed CI bytes
+        env:
+          REVIEWED_PACKAGE_SHA256: ${{ inputs.reviewed_package_sha256 }}
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { createHash } = require('node:crypto');
+          const { execFileSync } = require('node:child_process');
+          const { inspectPackage } = require('./scripts/check-package-content.cjs');
+          assert.match(process.env.REVIEWED_PACKAGE_SHA256, /^[0-9a-f]{64}$/);
+          const output = 'release-artifact';
+          assert.equal(fs.existsSync(output), false, 'Artifact directory must be fresh');
+          fs.mkdirSync(output);
+          const pack = JSON.parse(execFileSync('npm', ['pack', '--json', '--ignore-scripts', '--offline', '--pack-destination', output], { encoding: 'utf8' }));
+          inspectPackage(pack);
+          assert.equal(pack[0].name, 'n8n-nodes-sumwise-compute');
+          assert.equal(pack[0].version, '0.1.0');
+          assert.equal(pack[0].filename, 'n8n-nodes-sumwise-compute-0.1.0.tgz');
+          const sha256 = createHash('sha256').update(fs.readFileSync(path.join(output, pack[0].filename))).digest('hex');
+          assert.equal(sha256, process.env.REVIEWED_PACKAGE_SHA256, 'Package bytes differ from the reviewed CI artifact; publication refused');
+          console.log(JSON.stringify({ filename: pack[0].filename, sha256, reviewedBytesMatch: true }));
+          NODE
       - name: Publish with trusted publisher and provenance
         if: inputs.authentication == 'trusted'
-        run: npm publish --provenance --access public --tag next --ignore-scripts
-      - name: First publication with separately approved short-lived token
+        run: npm publish ./release-artifact/n8n-nodes-sumwise-compute-0.1.0.tgz --provenance --access public --tag latest --ignore-scripts
+      - name: Publish only with a separately approved short-lived token
         if: inputs.authentication == 'bootstrap-token'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
         run: |
           test -n "$NODE_AUTH_TOKEN" || { echo 'Required bootstrap secret is absent'; exit 1; }
-          npm publish --provenance --access public --tag next --ignore-scripts
+          npm publish ./release-artifact/n8n-nodes-sumwise-compute-0.1.0.tgz --provenance --access public --tag latest --ignore-scripts

@@ -23,3 +23,48 @@ jobs:
       - run: npm test
       - run: npm run check:package
       - run: npm run check:source
+      - name: Pack the qualified source for review
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { createHash } = require('node:crypto');
+          const { execFileSync } = require('node:child_process');
+          const { inspectPackage } = require('./scripts/check-package-content.cjs');
+          const pkg = require('./package.json');
+          const output = 'release-artifact';
+          assert.equal(fs.existsSync(output), false, 'Artifact directory must be fresh');
+          fs.mkdirSync(output);
+          const pack = JSON.parse(execFileSync('npm', ['pack', '--json', '--ignore-scripts', '--offline', '--pack-destination', output], { encoding: 'utf8' }));
+          inspectPackage(pack);
+          assert.equal(pack[0].filename, `${pkg.name}-${pkg.version}.tgz`);
+          const bytes = fs.readFileSync(path.join(output, pack[0].filename));
+          const hash = (data, algorithm = 'sha256', encoding = 'hex') => createHash(algorithm).update(data).digest(encoding);
+          const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          assert.equal(sourceSha, process.env.GITHUB_SHA);
+          const manifest = {
+            schema: 'sumwise-npm-review-artifact-v1',
+            repository: process.env.GITHUB_REPOSITORY,
+            sourceSha, runId: process.env.GITHUB_RUN_ID, runAttempt: process.env.GITHUB_RUN_ATTEMPT,
+            name: pkg.name, version: pkg.version, filename: pack[0].filename,
+            bytes: bytes.length, sha256: hash(bytes), integrity: `sha512-${hash(bytes, 'sha512', 'base64')}`,
+            node: process.version, npm: execFileSync('npm', ['--version'], { encoding: 'utf8' }).trim(),
+            files: pack[0].files.map(file => ({ path: file.path, bytes: file.size, sha256: hash(fs.readFileSync(file.path)) })),
+          };
+          assert.equal(manifest.integrity, pack[0].integrity);
+          fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+          console.log(JSON.stringify({ sourceSha, filename: manifest.filename, sha256: manifest.sha256, files: manifest.files.length }));
+          NODE
+      - name: Retain the main-branch package for independent review
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'avery835/n8n-nodes-sumwise-compute'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: npm-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            release-artifact/*.tgz
+            release-artifact/manifest.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+          overwrite: false

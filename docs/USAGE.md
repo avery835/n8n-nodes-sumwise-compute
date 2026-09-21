@@ -1,9 +1,9 @@
 # SumWise Compute usage
 
-Community preview for self-hosted n8n. Not n8n-verified.
+Community connector for self-hosted n8n. Not n8n-verified.
 Paid SumWise Compute access is separately provisioned.
 
-Install the exact **n8n-nodes-sumwise-compute@0.1.0-dev.1** version through your permitted self-hosted community-node installation flow; **@next** follows the preview tag. Instance permissions and policy must allow unverified packages. See [installation and access](../README.md). This is not an n8n Cloud custom-node release.
+Install the exact **n8n-nodes-sumwise-compute@0.1.0** version through your permitted self-hosted community-node installation flow; **latest** is the stable channel and **@next** retains the separate preview. Instance permissions and policy must allow unverified packages. See [installation and access](../README.md). This is not an n8n Cloud custom-node release.
 
 ## Credentials
 
@@ -11,7 +11,7 @@ Install the exact **n8n-nodes-sumwise-compute@0.1.0-dev.1** version through your
 
 **Service Origin** defaults to https://api.sumwisecalc.com. The credential owner chooses where the secret is sent. Alternative HTTPS origins are supported. Local HTTP is permitted only for literal 127.0.0.1 or [::1], optionally with a port. HTTP hostnames, shorthand addresses, paths, query strings, fragments and embedded user information are rejected. Origin and timeout are credential-level settings, outside per-item expressions. Redirects are refused and normal TLS validation remains enabled.
 
-**Request Timeout (ms)** is an integer from 1,000 to 120,000, default 30,000. This is a client choice, not a processing-time guarantee. The supported credential test sends 1+1 through Evaluate and requires exact integer 2. Credential testing sends a calculation request. Each accepted test counts toward your request limits. n8n may test on save, explicit retest and opening an existing credential; see [credentials](CREDENTIALS.md). No health/authentication endpoint is invented.
+**Request Timeout (ms)** is an integer from 1,000 to 120,000, default 30,000. This is a client choice, not a processing-time guarantee. The supported credential-file test sends 1+1 through Evaluate. Its HTTP-status check verifies request acceptance, not the typed calculation body. Normal Evaluate and separate integration assertions validate typed results. Credential testing sends a calculation request. Each accepted test counts toward your request limits. n8n may test on save, explicit retest and opening an existing credential; see [credentials](CREDENTIALS.md). No health/authentication endpoint is invented.
 
 ## Input and results
 
@@ -62,7 +62,7 @@ The [exact example](../examples/01-exact-result.mock.json) and [reconciliation e
 
 Mock-backed tests and two real-n8n CLI examples have executed, and the public source passed Linux CI. Prior bounded live credential, Evaluate, reconciliation exception/match and generated-wrapper requests succeeded through an authorized local route preserving the real HTTPS hostname and certificate validation. External TLS reachability was observed separately; it was not a full external authenticated workflow test. A separate continuation observed expected revoked-credential rejection without converting the original interrupted lifecycle into PASS. Prior owner-reported editor checks are not a new automated walkthrough.
 
-The pinned custom credential-test context uses the legacy `this.helpers.request` helper. The known verification rule rejects it with inline configuration ignored; the single narrow directive is not an n8n waiver or scanner PASS. npm publication does not establish n8n verification, Cloud availability, external AI-agent behavior or real customer finance integration.
+The supported credential-file test is status-based: it checks HTTP request acceptance and does not validate the calculation body. Normal Evaluate retains the closed typed-response checks above; separate integration assertions verify that 1+1 returns exact integer 2. The authentication hook enforces credential origin/timeout and prevents a second request after authentication failure. Earlier live evidence covers the previous credential path, not this change. npm publication does not establish n8n verification, Cloud availability, external AI-agent behavior or real customer finance integration.
 
 ## Tool use
 

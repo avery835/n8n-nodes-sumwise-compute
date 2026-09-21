@@ -1,17 +1,17 @@
 # SumWise Compute for n8n
 
-Community preview for self-hosted n8n. Not n8n-verified.
+Community connector for self-hosted n8n. Not n8n-verified.
 Paid SumWise Compute access is separately provisioned.
 
 Evaluate expressions using the separately provisioned SumWise Compute service. The connector preserves typed exact integer/rational strings and approximate-result provenance without embedding a calculator. An external calculation service is useful when workflows need the same calculation contract and engine identity across hosts.
 
-This unverified community preview targets compatible self-hosted instances whose permissions and community-node policy allow unverified packages. It is not an n8n Cloud custom-node release, verified-node listing, endorsement or enterprise-readiness claim. No production suitability, uptime or throughput guarantee is made.
+This unverified community connector targets compatible self-hosted instances whose permissions and community-node policy allow unverified packages. It is not an n8n Cloud custom-node release, verified-node listing, endorsement or enterprise-readiness claim. No production suitability, uptime or throughput guarantee is made.
 
-## Install the preview
+## Install
 
-In a permitted self-hosted instance, an authorized owner/admin can open **Settings → Community nodes → Install** and enter **n8n-nodes-sumwise-compute@0.1.0-dev.1**. Review the community-package notice and install. Follow your instance's administrator-approved installation procedure if this UI is unavailable; a disabled community-node policy is not bypassed by this package.
+In a permitted self-hosted instance, an authorized owner/admin can open **Settings → Community nodes → Install** and enter **n8n-nodes-sumwise-compute@0.1.0**. Review the community-package notice and install. Follow your instance's administrator-approved installation procedure if this UI is unavailable; a disabled community-node policy is not bypassed by this package.
 
-Prefer that exact version for reproducibility. **n8n-nodes-sumwise-compute@next** is an alternative that follows the preview distribution tag and can change later. If the exact version does not resolve in npm, publication has not completed; public source or a successful CI run alone is not a registry release. See the [npm package](https://www.npmjs.com/package/n8n-nodes-sumwise-compute).
+Prefer that exact version for reproducibility. Stable releases use **latest**. **n8n-nodes-sumwise-compute@next** remains the separate older preview channel; it is not promoted or removed by the stable release. If the exact version does not resolve in npm, publication has not completed; public source or a successful CI run alone is not a registry release. See the [npm package](https://www.npmjs.com/package/n8n-nodes-sumwise-compute).
 
 Installation grants no service access. After installation, arrange paid access separately and select the **SumWise Compute API** credential when using **SumWise Compute**.
 
@@ -50,7 +50,7 @@ The public source has passed Linux CI with 120 baseline tests, build, configured
 
 A later continuation observed the expected rejection of an owner-resupplied revoked credential. It does not relabel the original interrupted lifecycle as PASS or prove uninterrupted secret continuity. Prior editor checks are owner-reported evidence, not a new automated walkthrough. No external AI model/agent loop or real customer finance, email or CRM integration is proven.
 
-The pinned n8n 2.37.10 custom credential-test context exposes the existing legacy `this.helpers.request` helper. The known verification rule rejects that call when inline configuration is ignored. The call and its single narrow directive remain visible; configured lint success is not scanner acceptance. This finding is disclosed for this unverified preview, not waived by n8n. npm publication, tested functionality, n8n verification/Cloud availability and paid service entitlement are separate.
+The credential-file test uses the supported n8n ICredentialTestRequest mechanism with an authentication hook that validates the chosen origin and timeout, keeps TLS validation, refuses redirects and prevents an authentication failure from causing a second HTTP request. This status-based check establishes HTTP request acceptance, not correctness of the returned calculation. Normal Evaluate retains full typed-response validation. The stock lint configuration has no compatibility suppression. Local lint or mock success is not official scanner acceptance, publication provenance or n8n verification. The changed credential path requires its own separately authorized real-service check; earlier live results do not qualify it.
 
 For source-checkout development and controlled publishing, see the public repository's [development guide](https://github.com/avery835/n8n-nodes-sumwise-compute/blob/main/docs/DEVELOPMENT.md) and [publishing guide](https://github.com/avery835/n8n-nodes-sumwise-compute/blob/main/docs/PUBLISHING.md). Those source-only tools are excluded from npm.
 

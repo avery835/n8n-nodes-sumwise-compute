@@ -28,8 +28,7 @@ function context(mock, expressions, overrides = {}) {
       // Fixed test credential resolver; the real n8n authenticated helper and HTTP transport run below.
       authenticate: async (creds, type, options) => {
         assert.equal(type, 'sumWiseComputeApi');
-        assert.equal(new SumWiseComputeApi().authenticate.properties.headers.Authorization, '=Bearer {{$credentials.apiKey}}');
-        return { ...options, headers: { ...options.headers, Authorization: `Bearer ${creds.apiKey}` } };
+        return new SumWiseComputeApi().authenticate(creds, options);
       },
     },
   });
